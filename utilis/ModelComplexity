@@ -1,0 +1,30 @@
+from torchvision.transforms import transforms
+from torch.utils.data import DataLoader
+from torchstat import stat
+
+from utilis.DataHelper import *
+
+from networks.AB_UNet import AB_UNet
+from networks.U_Net import UNet
+from networks.Attention_UNet import Att_UNet
+
+model = AB_UNet(1, 1)
+
+x_transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize([0.5], [0.5])
+])
+y_transform = transforms.ToTensor()
+
+img_root = r'F:\CPP\DATASATS_Version4.0\Train-02\img'
+label_root = r'F:\CPP\DATASATS_Version4.0\Train-02\label'
+train_set = TrainDataset(img_root,
+                         label_root,
+                         transform=x_transform,
+                         target_transform=y_transform)
+train_dataloader = DataLoader(dataset=train_set,
+                              batch_size=4,
+                              shuffle=True,
+                              num_workers=0)
+
+stat(model, (1, 512, 512))
